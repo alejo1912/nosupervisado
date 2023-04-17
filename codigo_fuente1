@@ -1,0 +1,26 @@
+import pandas as pd
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+
+# Cargar los datos del archivo CSV
+datos = pd.read_csv('datos_transporte.csv')
+
+# Seleccionar las características relevantes para el modelo
+X = datos[['Numero_pasajeros', 'Duracion_viaje', 'Velocidad_promedio', 'Cantidad_paradas']]
+
+# Preprocesar los datos normalizando las características
+escala = StandardScaler()
+X_escalado = escala.fit_transform(X)
+
+# Entrenar el modelo de K-Means con 4 clusters
+kmeans = KMeans(n_clusters=4, random_state=0).fit(X_escalado)
+
+# Predecir las etiquetas de cluster para cada muestra en los datos
+labels = kmeans.predict(X_escalado)
+
+# Agregar las etiquetas de cluster como columna en los datos originales
+datos['Cluster'] = labels
+
+# Guardar los resultados en un nuevo archivo CSV
+datos.to_csv('resultados_transporte.csv', index=False)
+
